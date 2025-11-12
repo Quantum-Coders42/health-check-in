@@ -16,14 +16,6 @@ import java.util.Date;
 
 @Component
 public class JwtUtil {
-    private static UserService staticUserService;
-
-    @Resource private UserService userService;
-
-    @PostConstruct
-    public void setUserService() {
-        staticUserService = userService;
-    }
 
     // 生成token
     public static String makeToken(String userId, String sign) {
