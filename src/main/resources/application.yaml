@@ -1,0 +1,12 @@
+spring:
+  profiles:
+    active: ${APP_SPRING_PROFILE:dev}
+
+  datasource:
+    username: ${APP_SPRING_DATASOURCE_USERNAME}
+    password: ${APP_SPRING_DATASOURCE_PASSWORD}
+    url: jdbc:mysql://${APP_SPRING_DATASOURCE_URL}/jade_diagnose?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+jwt:
+  secret: ${APP_JWT_SECRET}
