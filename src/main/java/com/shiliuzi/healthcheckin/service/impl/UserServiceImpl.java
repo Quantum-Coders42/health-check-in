@@ -51,22 +51,22 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     /**
      * 用户注册方法
      * 检查用户名是否已存在，并对密码进行加密后保存
-     * @param user 用户注册信息
+     * @param loginDto 用户注册信息
      * @return 是否注册成功
      */
     @Override
-    public boolean register(User user) {
+    public boolean register(LoginDto loginDto) {
         // 检查用户名是否已存在
-        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(User::getUsername, user.getUsername());
-        User existingUser = getOne(queryWrapper);
+        User existingUser = lambdaQuery().eq(User::getUsername, loginDto.getUsername()).one();
         
         if (existingUser != null) {
             throw new ServiceException("用户名已存在");
         }
-        
+
+        User user = new User();
+        user.setUsername(loginDto.getUsername());
         // 对密码进行MD5加密
-        user.setPassword(PasswordUtil.encryptPassword(user.getPassword()));
+        user.setPassword(PasswordUtil.encryptPassword(loginDto.getPassword()));
         
         // 保存用户
         return save(user);

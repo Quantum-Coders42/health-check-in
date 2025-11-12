@@ -18,6 +18,6 @@ public interface UserService extends IService<User> {
      * @param user 用户信息
      * @return 是否注册成功
      */
-    boolean register(User user);
+    boolean register(LoginDto user);
 
 }

@@ -38,7 +38,7 @@ public class UserController {
      * @return 注册结果
      */
     @PostMapping("/register")
-    public Result<Boolean> register(@Valid @RequestBody User user) {
+    public Result<Boolean> register(@Valid @RequestBody LoginDto user) {
         boolean result = userService.register(user);
         return Result.success(result);
     }

@@ -29,7 +29,7 @@ public class JwtUtil {
     public static String makeToken(String userId, String sign) {
         return JWT.create()
                 .withAudience(userId) // userId为载荷
-                .withExpiresAt(DateUtil.offsetHour(new Date(), 2)) // 2小时后token到期
+                .withExpiresAt(DateUtil.offsetHour(new Date(), 8)) // 8小时后token到期
                 .sign(Algorithm.HMAC256(sign)); // username为token密钥
     }
 
