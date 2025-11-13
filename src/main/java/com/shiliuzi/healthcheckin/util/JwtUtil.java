@@ -16,20 +16,12 @@ import java.util.Date;
 
 @Component
 public class JwtUtil {
-    private static UserService staticUserService;
-
-    @Resource private UserService userService;
-
-    @PostConstruct
-    public void setUserService() {
-        staticUserService = userService;
-    }
 
     // 生成token
     public static String makeToken(String userId, String sign) {
         return JWT.create()
                 .withAudience(userId) // userId为载荷
-                .withExpiresAt(DateUtil.offsetHour(new Date(), 2)) // 2小时后token到期
+                .withExpiresAt(DateUtil.offsetHour(new Date(), 8)) // 8小时后token到期
                 .sign(Algorithm.HMAC256(sign)); // username为token密钥
     }
 

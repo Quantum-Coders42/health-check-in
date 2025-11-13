@@ -1,5 +1,6 @@
 package com.shiliuzi.healthcheckin.util;
 
+import com.shiliuzi.healthcheckin.common.exception.ServiceException;
 import org.apache.commons.codec.digest.DigestUtils;
 
 /**
@@ -13,6 +14,10 @@ public class PasswordUtil {
      * @return 加密后的密码字符串
      */
     public static String encryptPassword(String password) {
+        // 添加null值检查，增强代码健壮性
+        if (password == null) {
+            throw new ServiceException("密码不能为空");
+        }
         return DigestUtils.md5Hex(password);
     }
     
