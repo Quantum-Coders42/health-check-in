@@ -1,4 +1,4 @@
-name: Build, Push and Deploy
+name: Smart Build, Push and Deploy
 
 on:
   push:
@@ -7,9 +7,13 @@ on:
 env:
   REGISTRY: crpi-9koetp78bl09eg2k.cn-shenzhen.personal.cr.aliyuncs.com
   IMAGE_NAME: ${{ secrets.ALIYUN_ACR_NAMESPACE }}/health-check-in  # 阿里云镜像名称
+  CONTAINER_NAME: health-check-in  # 容器名称
+  NETWORK_NAME: jade-network  # 网络名称
+  HOST_PORT: 8080  # 主机端口
+  CONTAINER_PORT: 8080  # 容器端口
 
 jobs:
-  build-deploy:
+  smart-build-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -32,8 +36,26 @@ jobs:
           username: ${{ secrets.ALIYUN_ACR_USERNAME }}
           password: ${{ secrets.ALIYUN_ACR_PASSWORD }}
 
-      # 构建并推送镜像
+      # 检查镜像是否已存在
+      - name: Check if image exists
+        id: check-image
+        run: |
+          COMMIT_SHA=${{ github.sha }}
+          IMAGE_URL="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${COMMIT_SHA}"
+          echo "Checking if image exists: ${IMAGE_URL}"
+          
+          # 尝试拉取镜像，如果成功说明已存在
+          if docker pull ${IMAGE_URL} 2>/dev/null; then
+            echo "Image already exists, skipping build"
+            echo "image-exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "Image does not exist, will build and push"
+            echo "image-exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      # 构建并推送镜像（仅当镜像不存在时）
       - name: Build and push
+        if: steps.check-image.outputs.image-exists == 'false'
         uses: docker/build-push-action@v4
         with:
           context: .  # Dockerfile 在根目录
@@ -58,14 +80,113 @@ jobs:
           username: ${{ secrets.PUBLIC_SERVER_USERNAME }}  # 登录用户名
           key: ${{ secrets.PUBLIC_SERVER_PRIVATE_KEY }}  # SSH私钥
           script: |
-            # 进入项目目录
-            cd /opt/health-check-in
+            set -e  # 遇到错误立即退出
             
-            # 拉取最新镜像
-            docker compose pull
+            echo "Starting smart deployment with commit: ${{ github.sha }}"
             
-            # 重新启动容器
-            docker compose up -d --force-recreate
+            # 定义变量
+            IMAGE_URL="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"
+            BACKUP_SCRIPT="/opt/health-check-in/scripts/backup-container.sh"
+            VALIDATE_SCRIPT="/opt/health-check-in/scripts/validate-deployment.sh"
             
-            # 清理旧镜像
-            docker image prune -af --filter "until=24h"
+            # 创建脚本目录
+            mkdir -p /opt/health-check-in/scripts
+            
+            # 创建备份脚本（如果不存在）
+            if [ ! -f "${BACKUP_SCRIPT}" ]; then
+              echo "Creating backup script..."
+              cat > "${BACKUP_SCRIPT}" << 'EOF'
+            #!/bin/bash
+            CONTAINER_NAME="health-check-in"
+            BACKUP_DIR="/opt/backups/health-check-in"
+            DATE=$(date +%Y%m%d_%H%M%S)
+            mkdir -p ${BACKUP_DIR}
+            if docker ps -a --format "table {{.Names}}" | grep -q "^${CONTAINER_NAME}$"; then
+                docker inspect ${CONTAINER_NAME} > ${BACKUP_DIR}/container_config_${DATE}.json
+                docker logs --tail 1000 ${CONTAINER_NAME} > ${BACKUP_DIR}/container_logs_${DATE}.log 2>&1
+                echo "Container status: $(docker inspect -f '{{.State.Status}}' ${CONTAINER_NAME})" > ${BACKUP_DIR}/status_${DATE}.txt
+                echo "Backup completed: ${DATE}"
+            fi
+            EOF
+              chmod +x "${BACKUP_SCRIPT}"
+            fi
+            
+            # 创建验证脚本（如果不存在）
+            if [ ! -f "${VALIDATE_SCRIPT}" ]; then
+              echo "Creating validation script..."
+              cat > "${VALIDATE_SCRIPT}" << 'EOF'
+            #!/bin/bash
+            CONTAINER_NAME="health-check-in"
+            MAX_RETRIES=30
+            RETRY_COUNT=0
+            if ! docker ps --format "table {{.Names}}" | grep -q "^${CONTAINER_NAME}$"; then
+                echo "❌ Container not running!"
+                exit 1
+            fi
+            while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
+                if docker ps -f name=${CONTAINER_NAME} --format "table {{.Status}}" | grep -q "Up"; then
+                    echo "✅ Container is healthy!"
+                    exit 0
+                fi
+                RETRY_COUNT=$((RETRY_COUNT + 1))
+                sleep 10
+            done
+            echo "❌ Container health check failed!"
+            exit 1
+            EOF
+              chmod +x "${VALIDATE_SCRIPT}"
+            fi
+            
+            # 备份当前容器
+            echo "Backing up current container..."
+            ${BACKUP_SCRIPT} || echo "Backup completed with warnings"
+            
+            # 登录阿里云容器镜像服务
+            echo "Logging in to Aliyun ACR..."
+            echo "${{ secrets.ALIYUN_ACR_PASSWORD }}" | docker login ${{ env.REGISTRY }} -u "${{ secrets.ALIYUN_ACR_USERNAME }}" --password-stdin
+            
+            # 拉取指定版本的镜像
+            echo "Pulling image: ${IMAGE_URL}"
+            docker pull ${IMAGE_URL}
+            
+            # 停止旧容器（如果存在）
+            echo "Stopping old container..."
+            docker stop ${{ env.CONTAINER_NAME }} 2>/dev/null || true
+            docker rm ${{ env.CONTAINER_NAME }} 2>/dev/null || true
+            
+            # 创建网络（如果不存在）
+            echo "Creating network if not exists..."
+            docker network create ${{ env.NETWORK_NAME }} 2>/dev/null || true
+            
+            # 使用纯Docker命令启动新容器
+            echo "Starting new container with image: ${IMAGE_URL}"
+            docker run -d \
+              --name ${{ env.CONTAINER_NAME }} \
+              --network ${{ env.NETWORK_NAME }} \
+              --restart unless-stopped \
+              -p ${{ env.HOST_PORT }}:${{ env.CONTAINER_PORT }} \
+              -e APP_SPRING_DATASOURCE_USERNAME=root \
+              -e APP_SPRING_DATASOURCE_PASSWORD=mysql_bzzTct \
+              -e APP_SPRING_DATASOURCE_URL=106.55.7.149:3306 \
+              -e APP_JWT_SECRET=1c4b7624085444ad6b2d147df9db9f6e \
+              ${IMAGE_URL}
+            
+            # 验证部署
+            echo "Validating deployment..."
+            if ${VALIDATE_SCRIPT}; then
+                echo "✅ Deployment validation passed!"
+            else
+                echo "❌ Deployment validation failed!"
+                echo "Container logs (last 50 lines):"
+                docker logs --tail 50 ${{ env.CONTAINER_NAME }}
+                exit 1
+            fi
+            
+            # 清理旧镜像（保留最近3个版本）
+            echo "Cleaning up old images..."
+            docker images "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}" --format "table {{.Repository}}:{{.Tag}}\t{{.ID}}\t{{.CreatedAt}}" | \
+              tail -n +4 | \
+              awk 'NR>2 {print $2}' | \
+              xargs -r docker rmi 2>/dev/null || true
+            
+            echo "🎉 Smart deployment completed successfully!"
