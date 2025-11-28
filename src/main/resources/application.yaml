@@ -5,7 +5,7 @@ spring:
   datasource:
     username: ${APP_SPRING_DATASOURCE_USERNAME}
     password: ${APP_SPRING_DATASOURCE_PASSWORD}
-    url: jdbc:mysql://${APP_SPRING_DATASOURCE_URL}/jade_diagnose?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://${APP_SPRING_DATASOURCE_URL}/health_check_in?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
     driver-class-name: com.mysql.cj.jdbc.Driver
 
 jwt:
