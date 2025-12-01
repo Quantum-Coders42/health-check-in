@@ -1,0 +1,74 @@
+package com.shiliuzi.healthcheckin.pojo.po;
+
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.tangzc.autotable.annotation.Index;
+import com.tangzc.autotable.annotation.enums.IndexTypeEnum;
+import com.tangzc.mpe.autotable.annotation.Column;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+/**
+ * 饮食打卡记录实体类
+ */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@TableName("diet_records")
+public class DietRecord {
+
+    /**
+     * 主键ID
+     */
+    @TableId(type = IdType.AUTO)
+    private Long id;
+
+    /**
+     * 用户ID
+     */
+    @TableField(value = "`user_id`")
+    @Column(comment = "用户ID", notNull = true)
+    @Index(name = "idx_user_id", type = IndexTypeEnum.NORMAL)
+    private Long userId;
+
+    /**
+     * 打卡日期
+     */
+    @TableField(value = "`record_date`")
+    @Column(comment = "打卡日期", notNull = true)
+    private LocalDate recordDate;
+
+    /**
+     * 饮食类型：BREAKFAST-早餐，LUNCH-午餐，DINNER-晚餐，SNACK-加餐
+     */
+    @TableField(value = "`meal_type`")
+    @Column(comment = "饮食类型：BREAKFAST-早餐，LUNCH-午餐，DINNER-晚餐，SNACK-加餐", notNull = true, length = 20)
+    private String mealType;
+
+    /**
+     * 食物描述
+     */
+    @TableField(value = "`description`")
+    @Column(comment = "食物描述", length = 500)
+    private String description;
+
+    /**
+     * 卡路里估算（可选）
+     */
+    @TableField(value = "`calories`")
+    @Column(comment = "卡路里估算")
+    private Integer calories;
+
+    /**
+     * 创建时间
+     */
+    @TableField(value = "`created_at`")
+    @Column(comment = "创建时间", notNull = true)
+    private LocalDateTime createdAt;
+}
