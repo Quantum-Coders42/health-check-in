@@ -1,9 +1,10 @@
 package com.shiliuzi.healthcheckin.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.shiliuzi.healthcheckin.pojo.dto.CheckInRecordDto;
+import com.shiliuzi.healthcheckin.pojo.dto.ExerciseCheckInDto;
 import com.shiliuzi.healthcheckin.pojo.dto.RecordSelectDto;
 import com.shiliuzi.healthcheckin.pojo.po.ExerciseRecord;
+import com.shiliuzi.healthcheckin.pojo.vo.ExerciseRecordVo;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -19,7 +20,7 @@ public interface ExerciseRecordService extends IService<ExerciseRecord> {
      * @param dto 打卡信息
      * @return 是否成功
      */
-    Long addRecord(CheckInRecordDto dto,Long userId);
+    Long addRecord(ExerciseCheckInDto dto,Long userId);
 
-    List<ExerciseRecord> getRecords(Long userId, RecordSelectDto dto);
+    List<ExerciseRecordVo> getRecords(Long userId, RecordSelectDto dto);
 }

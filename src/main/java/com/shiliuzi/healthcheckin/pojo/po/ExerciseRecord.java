@@ -52,6 +52,27 @@ public class ExerciseRecord {
     private String description;
 
     /**
+     * 运动类型ID
+     */
+    @TableField(value = "`exercise_type_id`")
+    @Column(comment = "运动类型ID", notNull = true)
+    private Long exerciseTypeId;
+
+    /**
+     * 运动时长（分钟）
+     */
+    @TableField(value = "`duration`")
+    @Column(comment = "运动时长（分钟）", notNull = true)
+    private Integer duration;
+
+    /**
+     * 运动强度（1-5）
+     */
+    @TableField(value = "`intensity`")
+    @Column(comment = "运动强度（1-5）", notNull = true)
+    private Integer intensity;
+
+    /**
      * 创建时间
      */
     @TableField(value = "`created_at`")
