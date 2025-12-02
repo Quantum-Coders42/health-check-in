@@ -45,25 +45,11 @@ public class DietRecord {
     private LocalDate recordDate;
 
     /**
-     * 饮食类型：BREAKFAST-早餐，LUNCH-午餐，DINNER-晚餐，SNACK-加餐
-     */
-    @TableField(value = "`meal_type`")
-    @Column(comment = "饮食类型：BREAKFAST-早餐，LUNCH-午餐，DINNER-晚餐，SNACK-加餐", notNull = true, length = 20)
-    private String mealType;
-
-    /**
-     * 食物描述
+     * 饮食描述
      */
     @TableField(value = "`description`")
-    @Column(comment = "食物描述", length = 500)
+    @Column(comment = "饮食描述", length = 500)
     private String description;
-
-    /**
-     * 卡路里估算（可选）
-     */
-    @TableField(value = "`calories`")
-    @Column(comment = "卡路里估算")
-    private Integer calories;
 
     /**
      * 创建时间

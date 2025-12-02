@@ -38,38 +38,17 @@ public class SleepRecord {
     private Long userId;
 
     /**
-     * 睡眠日期（记录的是哪一天的睡眠）
+     * 打卡日期
      */
     @TableField(value = "`record_date`")
-    @Column(comment = "睡眠日期", notNull = true)
+    @Column(comment = "打卡日期", notNull = true)
     private LocalDate recordDate;
 
     /**
-     * 睡眠时长（分钟）
-     */
-    @TableField(value = "`sleep_duration_minutes`")
-    @Column(comment = "睡眠时长（分钟）", notNull = true)
-    private Integer sleepDurationMinutes;
-
-    /**
-     * 入睡时间
-     */
-    @TableField(value = "`sleep_time`")
-    @Column(comment = "入睡时间", notNull = true)
-    private LocalDateTime sleepTime;
-
-    /**
-     * 起床时间
-     */
-    @TableField(value = "`wake_time`")
-    @Column(comment = "起床时间", notNull = true)
-    private LocalDateTime wakeTime;
-
-    /**
-     * 睡眠质量描述
+     * 睡眠描述
      */
     @TableField(value = "`description`")
-    @Column(comment = "睡眠质量描述", length = 500)
+    @Column(comment = "睡眠描述", length = 500)
     private String description;
 
     /**

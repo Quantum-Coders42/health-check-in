@@ -15,7 +15,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
- * 饮水摄入量记录实体类
+ * 饮水打卡记录实体类
  */
 @Data
 @NoArgsConstructor
@@ -45,17 +45,10 @@ public class WaterIntakeRecord {
     private LocalDate recordDate;
 
     /**
-     * 饮水量（毫升）
-     */
-    @TableField(value = "`amount_ml`")
-    @Column(comment = "饮水量（毫升）", notNull = true)
-    private Integer amountMl;
-
-    /**
-     * 饮水备注
+     * 饮水描述
      */
     @TableField(value = "`description`")
-    @Column(comment = "饮水备注", length = 200)
+    @Column(comment = "饮水描述", length = 500)
     private String description;
 
     /**
