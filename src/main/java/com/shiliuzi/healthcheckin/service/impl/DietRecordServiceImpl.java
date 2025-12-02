@@ -7,7 +7,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.shiliuzi.healthcheckin.common.AppExceptionCodeMsg;
 import com.shiliuzi.healthcheckin.common.exception.ServiceException;
 import com.shiliuzi.healthcheckin.mapper.DietRecordMapper;
-import com.shiliuzi.healthcheckin.pojo.dto.DietCheckInDto;
+import com.shiliuzi.healthcheckin.pojo.dto.CheckInRecordDto;
+import com.shiliuzi.healthcheckin.pojo.dto.RecordSelectDto;
 import com.shiliuzi.healthcheckin.pojo.po.DietRecord;
 import com.shiliuzi.healthcheckin.service.DietRecordService;
 import org.springframework.stereotype.Service;
@@ -24,16 +25,15 @@ public class DietRecordServiceImpl extends ServiceImpl<DietRecordMapper, DietRec
         implements DietRecordService {
 
     @Override
-    public Long addDietRecord(DietCheckInDto dto, Long userId) {
-        // 检查是否已存在同一天同一类型餐食的打卡记录
+    public Long addRecord(CheckInRecordDto dto, Long userId) {
+        // 检查同一天是否已存在打卡记录
         List<DietRecord> records = lambdaQuery()
                 .eq(DietRecord::getUserId, userId)
                 .eq(DietRecord::getRecordDate, LocalDate.now())
-                .eq(DietRecord::getMealType, dto.getMealType())
                 .list();
 
         if (!records.isEmpty()) {
-            throw new ServiceException(AppExceptionCodeMsg.DIET_RECORD_EXIST);
+            throw new ServiceException(AppExceptionCodeMsg.RECORD_EXIST);
         }
 
         // 构建实体对象
@@ -48,17 +48,13 @@ public class DietRecordServiceImpl extends ServiceImpl<DietRecordMapper, DietRec
     }
 
     @Override
-    public List<DietRecord> getDietRecords(Long userId, LocalDate startDate, LocalDate endDate, String mealType) {
-        LambdaQueryChainWrapper<DietRecord> queryWrapper = lambdaQuery()
+    public List<DietRecord> getRecords(Long userId, RecordSelectDto dto) {
+        // 支持按日期范围查询
+        return lambdaQuery()
                 .eq(DietRecord::getUserId, userId)
                 .orderByDesc(DietRecord::getRecordDate)
-                .ge(startDate != null, DietRecord::getRecordDate, startDate)
-                .le(endDate != null, DietRecord::getRecordDate, endDate);
-
-        if (mealType != null && !mealType.trim().isEmpty()) {
-            queryWrapper.eq(DietRecord::getMealType, mealType);
-        }
-
-        return list(queryWrapper);
+                .ge(dto.getStartDate() != null, DietRecord::getRecordDate, dto.getStartDate())
+                .le(dto.getEndDate() != null, DietRecord::getRecordDate, dto.getEndDate())
+                .list();
     }
 }

@@ -2,7 +2,8 @@ package com.shiliuzi.healthcheckin.controller;
 
 import com.shiliuzi.healthcheckin.common.Result;
 import com.shiliuzi.healthcheckin.common.interceptor.JwtInterceptor;
-import com.shiliuzi.healthcheckin.pojo.dto.SleepCheckInDto;
+import com.shiliuzi.healthcheckin.pojo.dto.CheckInRecordDto;
+import com.shiliuzi.healthcheckin.pojo.dto.RecordSelectDto;
 import com.shiliuzi.healthcheckin.pojo.po.SleepRecord;
 import com.shiliuzi.healthcheckin.service.SleepRecordService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,25 +36,20 @@ public class SleepController {
      * @return 操作结果
      */
     @PostMapping("/checkin")
-    public Result<Long> addSleepRecord(@Valid @RequestBody SleepCheckInDto dto, HttpServletRequest request) {
+    public Result<Long> addSleepRecord(@Valid @RequestBody(required = false) CheckInRecordDto dto, HttpServletRequest request) {
         Long userId = JwtInterceptor.getUserIdFromReq(request);
-        return Result.success(sleepRecordService.addSleepRecord(dto, userId));
+        return Result.success(sleepRecordService.addRecord(dto, userId));
     }
 
     /**
      * 获取睡眠记录列表
-     *
-     * @param startDate 开始日期 (可选)
-     * @param endDate 结束日期 (可选)
      * @return 记录列表
      */
     @GetMapping("/records")
-    public Result<List<SleepRecord>> getSleepRecords(
-            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
-            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
-            HttpServletRequest request) {
+    public Result<List<SleepRecord>> getSleepRecords(@Valid @RequestBody(required = false) RecordSelectDto dto,
+                                                        HttpServletRequest request) {
         Long userId = JwtInterceptor.getUserIdFromReq(request);
-        List<SleepRecord> records = sleepRecordService.getSleepRecords(userId, startDate, endDate);
+        List<SleepRecord> records = sleepRecordService.getRecords(userId, dto);
         return Result.success(records);
     }
 }

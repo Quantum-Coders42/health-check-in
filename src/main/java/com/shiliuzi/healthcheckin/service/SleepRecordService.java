@@ -1,7 +1,8 @@
 package com.shiliuzi.healthcheckin.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.shiliuzi.healthcheckin.pojo.dto.SleepCheckInDto;
+import com.shiliuzi.healthcheckin.pojo.dto.CheckInRecordDto;
+import com.shiliuzi.healthcheckin.pojo.dto.RecordSelectDto;
 import com.shiliuzi.healthcheckin.pojo.po.SleepRecord;
 
 import java.time.LocalDate;
@@ -19,15 +20,14 @@ public interface SleepRecordService extends IService<SleepRecord> {
      * @param userId 用户ID
      * @return 记录ID
      */
-    Long addSleepRecord(SleepCheckInDto dto, Long userId);
+    Long addRecord(CheckInRecordDto dto, Long userId);
 
     /**
      * 获取睡眠记录列表
      *
      * @param userId 用户ID
-     * @param startDate 开始日期
-     * @param endDate 结束日期
+     * @param dto 查询条件
      * @return 记录列表
      */
-    List<SleepRecord> getSleepRecords(Long userId, LocalDate startDate, LocalDate endDate);
+    List<SleepRecord> getRecords(Long userId, RecordSelectDto dto);
 }
