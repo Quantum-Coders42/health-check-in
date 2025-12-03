@@ -44,7 +44,7 @@ public class ExerciseTypeController {
      * @return 操作结果
      */
     @PostMapping
-    public Result<Boolean> addType(@RequestBody @Validated AddTypeRequest request) {
+    public Result<Long> addType(@RequestBody @Validated AddTypeRequest request) {
         return Result.success(exerciseTypeService.addType(request.getTypeName()));
     }
 

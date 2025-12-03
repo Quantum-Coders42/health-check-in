@@ -21,7 +21,7 @@ public interface MealTypeService extends IService<MealType> {
      * 新增用餐类型
      *
      * @param typeName 用餐类型名称
-     * @return 是否成功
+     * @return 记录ID
      */
-    boolean addType(String typeName);
+    Long addType(String typeName);
 }

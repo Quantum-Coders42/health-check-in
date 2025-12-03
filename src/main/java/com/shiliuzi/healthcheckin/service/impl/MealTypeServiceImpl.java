@@ -22,19 +22,20 @@ public class MealTypeServiceImpl extends ServiceImpl<MealTypeMapper, MealType>
     }
 
     @Override
-    public boolean addType(String typeName) {
+    public Long addType(String typeName) {
         // 检查类型名称是否已存在
         MealType existType = lambdaQuery()
                 .eq(MealType::getTypeName, typeName)
                 .one();
 
         if (existType != null) {
-            return false;
+            return null;
         }
 
         MealType mealType = new MealType();
         mealType.setTypeName(typeName);
 
-        return save(mealType);
+        save(mealType);
+        return mealType.getId();
     }
 }

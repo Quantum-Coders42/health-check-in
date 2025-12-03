@@ -48,9 +48,8 @@ public class DietTypeController {
      * @return 操作结果
      */
     @PostMapping("/meal-type")
-    public Result<Boolean> addMealType(@RequestBody @Validated AddMealTypeRequest request) {
+    public Result<Long> addMealType(@RequestBody @Validated AddMealTypeRequest request) {
         return Result.success(mealTypeService.addType(request.getTypeName()));
-
     }
 
     /**
@@ -71,7 +70,7 @@ public class DietTypeController {
      * @return 操作结果
      */
     @PostMapping("/food-type")
-    public Result<Boolean> addFoodType(@RequestBody @Validated AddFoodTypeRequest request) {
+    public Result<Long> addFoodType(@RequestBody @Validated AddFoodTypeRequest request) {
         return Result.success(foodTypeService.addType(request.getTypeName()));
     }
 
