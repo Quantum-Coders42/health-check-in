@@ -11,17 +11,16 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
- * 饮食打卡记录实体类
+ * 食物实体类
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName("diet_records")
-public class DietRecord {
+@TableName("foods")
+public class Food {
 
     /**
      * 主键ID
@@ -30,33 +29,40 @@ public class DietRecord {
     private Long id;
 
     /**
-     * 用户ID
+     * 饮食打卡记录ID
      */
-    @TableField(value = "`user_id`")
-    @Column(comment = "用户ID", notNull = true)
-    @Index(name = "idx_user_id", type = IndexTypeEnum.NORMAL)
-    private Long userId;
+    @TableField(value = "`diet_record_id`")
+    @Column(comment = "饮食打卡记录ID", notNull = true)
+    @Index(name = "idx_diet_record_id", type = IndexTypeEnum.NORMAL)
+    private Long dietRecordId;
 
     /**
-     * 用餐类型ID
+     * 食物名称
      */
-    @TableField(value = "`meal_type_id`")
-    @Column(comment = "用餐类型ID", notNull = true)
-    private Long mealTypeId;
+    @TableField(value = "`food_name`")
+    @Column(comment = "食物名称", notNull = true, length = 100)
+    private String foodName;
 
     /**
-     * 打卡日期
+     * 热量（卡路里）
      */
-    @TableField(value = "`record_date`")
-    @Column(comment = "打卡日期", notNull = true)
-    private LocalDate recordDate;
+    @TableField(value = "`calories`")
+    @Column(comment = "热量（卡路里）")
+    private Double calories;
 
     /**
-     * 饮食描述
+     * 重量（克）
      */
-    @TableField(value = "`description`")
-    @Column(comment = "饮食描述", length = 500)
-    private String description;
+    @TableField(value = "`weight`")
+    @Column(comment = "重量（克）")
+    private Integer weight;
+
+    /**
+     * 食物类型ID
+     */
+    @TableField(value = "`food_type_id`")
+    @Column(comment = "食物类型ID")
+    private Long foodTypeId;
 
     /**
      * 创建时间
