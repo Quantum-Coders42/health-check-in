@@ -71,6 +71,6 @@ public class SleepRecordServiceImpl extends ServiceImpl<SleepRecordMapper, Sleep
                     BeanUtil.copyProperties(record, vo);
                     return vo;
                 })
-                .collect(Collectors.toList());
+                .toList();
     }
 }

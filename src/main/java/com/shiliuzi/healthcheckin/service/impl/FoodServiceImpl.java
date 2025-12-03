@@ -40,7 +40,7 @@ public class FoodServiceImpl extends ServiceImpl<FoodMapper, Food>
             food.setDietRecordId(dietRecordId);
             food.setCreatedAt(LocalDateTime.now());
             return food;
-        }).collect(Collectors.toList());
+        }).toList();
 
         saveBatch(foods);
 
@@ -83,6 +83,6 @@ public class FoodServiceImpl extends ServiceImpl<FoodMapper, Food>
                     vo.setFoodTypeName(typeNameMap.get(food.getFoodTypeId()));
                     return vo;
                 })
-                .collect(Collectors.toList());
+                .toList();
     }
 }

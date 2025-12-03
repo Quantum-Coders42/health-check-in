@@ -71,6 +71,6 @@ public class WaterIntakeServiceImpl extends ServiceImpl<WaterIntakeRecordMapper,
                     BeanUtil.copyProperties(record, vo);
                     return vo;
                 })
-                .collect(Collectors.toList());
+                .toList();
     }
 }
