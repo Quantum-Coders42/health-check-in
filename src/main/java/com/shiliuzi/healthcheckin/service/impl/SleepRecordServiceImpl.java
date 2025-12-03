@@ -6,15 +6,18 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.shiliuzi.healthcheckin.common.AppExceptionCodeMsg;
 import com.shiliuzi.healthcheckin.common.exception.ServiceException;
 import com.shiliuzi.healthcheckin.mapper.SleepRecordMapper;
-import com.shiliuzi.healthcheckin.pojo.dto.CheckInRecordDto;
 import com.shiliuzi.healthcheckin.pojo.dto.RecordSelectDto;
+import com.shiliuzi.healthcheckin.pojo.dto.SleepCheckInDto;
 import com.shiliuzi.healthcheckin.pojo.po.SleepRecord;
+import com.shiliuzi.healthcheckin.pojo.vo.SleepRecordVo;
 import com.shiliuzi.healthcheckin.service.SleepRecordService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 睡眠打卡记录Service实现类
@@ -24,7 +27,8 @@ public class SleepRecordServiceImpl extends ServiceImpl<SleepRecordMapper, Sleep
         implements SleepRecordService {
 
     @Override
-    public Long addRecord(CheckInRecordDto dto, Long userId) {
+    @Transactional
+    public Long addRecord(SleepCheckInDto dto, Long userId) {
         // 检查同一天是否已存在打卡记录
         List<SleepRecord> records = lambdaQuery()
                 .eq(SleepRecord::getUserId, userId)
@@ -32,7 +36,7 @@ public class SleepRecordServiceImpl extends ServiceImpl<SleepRecordMapper, Sleep
                 .list();
 
         if (!records.isEmpty()) {
-            throw new ServiceException(AppExceptionCodeMsg.RECORD_EXIST);
+            throw new ServiceException(AppExceptionCodeMsg.SLEEP_RECORD_EXIST);
         }
 
         // 构建实体对象
@@ -47,13 +51,26 @@ public class SleepRecordServiceImpl extends ServiceImpl<SleepRecordMapper, Sleep
     }
 
     @Override
-    public List<SleepRecord> getRecords(Long userId, RecordSelectDto dto) {
+    public List<SleepRecordVo> getRecords(Long userId, RecordSelectDto dto) {
         // 支持按日期范围查询
-        return lambdaQuery()
+        List<SleepRecord> records = lambdaQuery()
                 .eq(SleepRecord::getUserId, userId)
                 .orderByDesc(SleepRecord::getRecordDate)
                 .ge(dto.getStartDate() != null, SleepRecord::getRecordDate, dto.getStartDate())
                 .le(dto.getEndDate() != null, SleepRecord::getRecordDate, dto.getEndDate())
                 .list();
+
+        if (records.isEmpty()) {
+            return List.of();
+        }
+
+        // 转换为VO对象
+        return records.stream()
+                .map(record -> {
+                    SleepRecordVo vo = new SleepRecordVo();
+                    BeanUtil.copyProperties(record, vo);
+                    return vo;
+                })
+                .collect(Collectors.toList());
     }
 }

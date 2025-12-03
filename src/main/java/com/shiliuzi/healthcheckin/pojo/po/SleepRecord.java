@@ -45,6 +45,20 @@ public class SleepRecord {
     private LocalDate recordDate;
 
     /**
+     * 睡眠时长（分钟）
+     */
+    @TableField(value = "`duration`")
+    @Column(comment = "睡眠时长（分钟）", notNull = true)
+    private Integer duration;
+
+    /**
+     * 睡眠质量（1-5）
+     */
+    @TableField(value = "`quality`")
+    @Column(comment = "睡眠质量（1-5）", notNull = true)
+    private Integer quality;
+
+    /**
      * 睡眠描述
      */
     @TableField(value = "`description`")
