@@ -9,6 +9,7 @@ public enum AppExceptionCodeMsg {
     RECORD_EXIST("10001", "该日期已有运动打卡记录"),
     DIET_RECORD_EXIST("10002", "该日期该餐食类型已有打卡记录"),
     SLEEP_RECORD_EXIST("10003", "该日期已有睡眠打卡记录"),
+    WATER_RECORD_EXIST("10007", "该日期已有饮水打卡记录"),
     INVALID_SLEEP_TIME("10004", "起床时间必须在入睡时间之后"),
     INVALID_EXERCISE_TYPE("10005", "无效的运动类型ID"),
     INVALID_MEAL_TYPE("10006", "无效的用餐类型ID"),

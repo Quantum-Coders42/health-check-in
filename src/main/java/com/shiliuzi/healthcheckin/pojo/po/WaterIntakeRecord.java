@@ -45,6 +45,13 @@ public class WaterIntakeRecord {
     private LocalDate recordDate;
 
     /**
+     * 饮水体积（毫升）
+     */
+    @TableField(value = "`volume`")
+    @Column(comment = "饮水体积（毫升）", notNull = true)
+    private Integer volume;
+
+    /**
      * 饮水描述
      */
     @TableField(value = "`description`")
