@@ -2,9 +2,9 @@ package com.shiliuzi.healthcheckin.controller;
 
 import com.shiliuzi.healthcheckin.common.Result;
 import com.shiliuzi.healthcheckin.common.interceptor.JwtInterceptor;
-import com.shiliuzi.healthcheckin.pojo.dto.CheckInRecordDto;
+import com.shiliuzi.healthcheckin.pojo.dto.ExerciseCheckInDto;
 import com.shiliuzi.healthcheckin.pojo.dto.RecordSelectDto;
-import com.shiliuzi.healthcheckin.pojo.po.ExerciseRecord;
+import com.shiliuzi.healthcheckin.pojo.vo.ExerciseRecordVo;
 import com.shiliuzi.healthcheckin.service.ExerciseRecordService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -36,15 +36,15 @@ public class ExerciseController {
      * @return 操作结果
      */
     @PostMapping("/checkin")
-    public Result<Long> addExerciseRecord(@Valid @RequestBody(required = false) CheckInRecordDto dto, HttpServletRequest request) {
+    public Result<Long> addExerciseRecord(@Valid @RequestBody ExerciseCheckInDto dto, HttpServletRequest request) {
         Long userId = JwtInterceptor.getUserIdFromReq(request);
         return Result.success(exerciseRecordService.addRecord(dto,userId));
     }
 
     @GetMapping("/records")
-    public Result<List<ExerciseRecord>> getExerciseRecords(@Valid @RequestBody(required = false) RecordSelectDto dto, HttpServletRequest request){
+    public Result<List<ExerciseRecordVo>> getExerciseRecords(@Valid @RequestBody(required = false) RecordSelectDto dto, HttpServletRequest request){
         Long userId = JwtInterceptor.getUserIdFromReq(request);
-        List<ExerciseRecord> records = exerciseRecordService.getRecords(userId, dto);
+        List<ExerciseRecordVo> records = exerciseRecordService.getRecords(userId, dto);
         return Result.success(records);
     }
 }

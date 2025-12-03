@@ -2,9 +2,9 @@ package com.shiliuzi.healthcheckin.controller;
 
 import com.shiliuzi.healthcheckin.common.Result;
 import com.shiliuzi.healthcheckin.common.interceptor.JwtInterceptor;
-import com.shiliuzi.healthcheckin.pojo.dto.CheckInRecordDto;
+import com.shiliuzi.healthcheckin.pojo.dto.DietCheckInDto;
 import com.shiliuzi.healthcheckin.pojo.dto.RecordSelectDto;
-import com.shiliuzi.healthcheckin.pojo.po.DietRecord;
+import com.shiliuzi.healthcheckin.pojo.vo.DietRecordVo;
 import com.shiliuzi.healthcheckin.service.DietRecordService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -35,7 +35,7 @@ public class DietController {
      * @return 操作结果
      */
     @PostMapping("/checkin")
-    public Result<Long> addDietRecord(@Valid @RequestBody(required = false) CheckInRecordDto dto, HttpServletRequest request) {
+    public Result<Long> addDietRecord(@Valid @RequestBody DietCheckInDto dto, HttpServletRequest request) {
         Long userId = JwtInterceptor.getUserIdFromReq(request);
         return Result.success(dietRecordService.addRecord(dto, userId));
     }
@@ -45,10 +45,10 @@ public class DietController {
      * @return 记录列表
      */
     @GetMapping("/records")
-    public Result<List<DietRecord>> getDietRecords(@Valid @RequestBody(required = false) RecordSelectDto dto,
+    public Result<List<DietRecordVo>> getDietRecords(@Valid @RequestBody(required = false) RecordSelectDto dto,
                                                            HttpServletRequest request) {
         Long userId = JwtInterceptor.getUserIdFromReq(request);
-        List<DietRecord> records = dietRecordService.getRecords(userId, dto);
+        List<DietRecordVo> records = dietRecordService.getRecords(userId, dto);
         return Result.success(records);
     }
 }
