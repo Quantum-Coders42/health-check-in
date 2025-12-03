@@ -115,6 +115,6 @@ public class DietRecordServiceImpl extends ServiceImpl<DietRecordMapper, DietRec
                     vo.setFoods(foodService.getFoodsByDietRecordId(record.getId()));
                     return vo;
                 })
-                .collect(Collectors.toList());
+                .toList();
     }
 }

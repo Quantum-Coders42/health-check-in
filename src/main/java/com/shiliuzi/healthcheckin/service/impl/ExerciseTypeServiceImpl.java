@@ -22,19 +22,20 @@ public class ExerciseTypeServiceImpl extends ServiceImpl<ExerciseTypeMapper, Exe
     }
 
     @Override
-    public boolean addType(String typeName) {
+    public Long addType(String typeName) {
         // 检查类型名称是否已存在
         ExerciseType existType = lambdaQuery()
                 .eq(ExerciseType::getTypeName, typeName)
                 .one();
 
         if (existType != null) {
-            return false;
+            return null;
         }
 
         ExerciseType exerciseType = new ExerciseType();
         exerciseType.setTypeName(typeName);
 
-        return save(exerciseType);
+        save(exerciseType);
+        return exerciseType.getId();
     }
 }

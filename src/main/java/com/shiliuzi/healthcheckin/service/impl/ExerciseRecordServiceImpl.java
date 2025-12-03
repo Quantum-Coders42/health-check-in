@@ -97,6 +97,6 @@ public class ExerciseRecordServiceImpl extends ServiceImpl<ExerciseRecordMapper,
                     vo.setExerciseTypeName(typeNameMap.get(record.getExerciseTypeId()));
                     return vo;
                 })
-                .collect(Collectors.toList());
+                .toList();
     }
 }

@@ -21,7 +21,7 @@ public interface ExerciseTypeService extends IService<ExerciseType> {
      * 新增运动类型
      *
      * @param typeName 运动类型名称
-     * @return 是否成功
+     * @return 记录ID
      */
-    boolean addType(String typeName);
+    Long addType(String typeName);
 }

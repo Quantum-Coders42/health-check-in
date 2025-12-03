@@ -44,7 +44,7 @@ public class GlobalException extends Exception {
                                                 fieldError.getField(),
                                                 fieldError.getRejectedValue(),
                                                 fieldError.getDefaultMessage()))
-                        .collect(Collectors.toList());
+                        .toList();
         log.warn("参数校验失败: {}", errors);
         return Result.validationError(errors);
     }
@@ -68,7 +68,7 @@ public class GlobalException extends Exception {
                                             violation.getInvalidValue(),
                                             violation.getMessage());
                                 })
-                        .collect(Collectors.toList());
+                        .toList();
         log.warn("参数校验失败: {}", errors);
         return Result.validationError(errors);
     }
