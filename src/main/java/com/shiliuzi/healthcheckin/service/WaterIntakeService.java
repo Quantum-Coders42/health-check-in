@@ -1,7 +1,6 @@
 package com.shiliuzi.healthcheckin.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.shiliuzi.healthcheckin.pojo.dto.RecordSelectDto;
 import com.shiliuzi.healthcheckin.pojo.dto.WaterIntakeCheckInDto;
 import com.shiliuzi.healthcheckin.pojo.po.WaterIntakeRecord;
 import com.shiliuzi.healthcheckin.pojo.vo.WaterIntakeRecordVo;
@@ -30,5 +29,5 @@ public interface WaterIntakeService extends IService<WaterIntakeRecord> {
      * @param dto 查询条件
      * @return 记录列表
      */
-    List<WaterIntakeRecordVo> getRecords(Long userId, RecordSelectDto dto);
+    List<WaterIntakeRecordVo> getRecords(Long userId, LocalDate startDate, LocalDate endDate);
 }

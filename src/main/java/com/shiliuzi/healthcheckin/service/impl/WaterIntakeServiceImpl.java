@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.shiliuzi.healthcheckin.common.AppExceptionCodeMsg;
 import com.shiliuzi.healthcheckin.common.exception.ServiceException;
 import com.shiliuzi.healthcheckin.mapper.WaterIntakeRecordMapper;
-import com.shiliuzi.healthcheckin.pojo.dto.RecordSelectDto;
 import com.shiliuzi.healthcheckin.pojo.dto.WaterIntakeCheckInDto;
 import com.shiliuzi.healthcheckin.pojo.po.WaterIntakeRecord;
 import com.shiliuzi.healthcheckin.pojo.vo.WaterIntakeRecordVo;
@@ -51,13 +50,13 @@ public class WaterIntakeServiceImpl extends ServiceImpl<WaterIntakeRecordMapper,
     }
 
     @Override
-    public List<WaterIntakeRecordVo> getRecords(Long userId, RecordSelectDto dto) {
+    public List<WaterIntakeRecordVo> getRecords(Long userId, LocalDate startDate, LocalDate endDate) {
         // 支持按日期范围查询
         List<WaterIntakeRecord> records = lambdaQuery()
                 .eq(WaterIntakeRecord::getUserId, userId)
                 .orderByDesc(WaterIntakeRecord::getRecordDate)
-                .ge(dto.getStartDate() != null, WaterIntakeRecord::getRecordDate, dto.getStartDate())
-                .le(dto.getEndDate() != null, WaterIntakeRecord::getRecordDate, dto.getEndDate())
+                .ge(startDate != null, WaterIntakeRecord::getRecordDate, startDate)
+                .le(endDate != null, WaterIntakeRecord::getRecordDate, endDate)
                 .list();
 
         if (records.isEmpty()) {

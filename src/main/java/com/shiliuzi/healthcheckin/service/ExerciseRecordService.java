@@ -2,7 +2,6 @@ package com.shiliuzi.healthcheckin.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.shiliuzi.healthcheckin.pojo.dto.ExerciseCheckInDto;
-import com.shiliuzi.healthcheckin.pojo.dto.RecordSelectDto;
 import com.shiliuzi.healthcheckin.pojo.po.ExerciseRecord;
 import com.shiliuzi.healthcheckin.pojo.vo.ExerciseRecordVo;
 
@@ -22,5 +21,5 @@ public interface ExerciseRecordService extends IService<ExerciseRecord> {
      */
     Long addRecord(ExerciseCheckInDto dto,Long userId);
 
-    List<ExerciseRecordVo> getRecords(Long userId, RecordSelectDto dto);
+    List<ExerciseRecordVo> getRecords(Long userId, LocalDate startDate, LocalDate endDate);
 }

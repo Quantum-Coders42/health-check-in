@@ -3,13 +3,11 @@ package com.shiliuzi.healthcheckin.controller;
 import com.shiliuzi.healthcheckin.common.Result;
 import com.shiliuzi.healthcheckin.common.interceptor.JwtInterceptor;
 import com.shiliuzi.healthcheckin.pojo.dto.ExerciseCheckInDto;
-import com.shiliuzi.healthcheckin.pojo.dto.RecordSelectDto;
 import com.shiliuzi.healthcheckin.pojo.vo.ExerciseRecordVo;
 import com.shiliuzi.healthcheckin.service.ExerciseRecordService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -42,9 +40,10 @@ public class ExerciseController {
     }
 
     @GetMapping("/records")
-    public Result<List<ExerciseRecordVo>> getExerciseRecords(@Valid @RequestBody(required = false) RecordSelectDto dto, HttpServletRequest request){
+    public Result<List<ExerciseRecordVo>> getExerciseRecords(@RequestParam(required = false) LocalDate startDate,
+                                                           @RequestParam(required = false) LocalDate endDate,
+                                                           HttpServletRequest request) {
         Long userId = JwtInterceptor.getUserIdFromReq(request);
-        List<ExerciseRecordVo> records = exerciseRecordService.getRecords(userId, dto);
-        return Result.success(records);
+        return Result.success(exerciseRecordService.getRecords(userId, startDate, endDate));
     }
 }
