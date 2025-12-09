@@ -7,7 +7,6 @@ import com.shiliuzi.healthcheckin.common.AppExceptionCodeMsg;
 import com.shiliuzi.healthcheckin.common.exception.ServiceException;
 import com.shiliuzi.healthcheckin.mapper.ExerciseRecordMapper;
 import com.shiliuzi.healthcheckin.pojo.dto.ExerciseCheckInDto;
-import com.shiliuzi.healthcheckin.pojo.dto.RecordSelectDto;
 import com.shiliuzi.healthcheckin.pojo.po.ExerciseRecord;
 import com.shiliuzi.healthcheckin.pojo.po.ExerciseType;
 import com.shiliuzi.healthcheckin.pojo.vo.ExerciseRecordVo;
@@ -61,16 +60,12 @@ public class ExerciseRecordServiceImpl extends ServiceImpl<ExerciseRecordMapper,
     }
 
     @Override
-    public List<ExerciseRecordVo> getRecords(Long userId, RecordSelectDto dto) {
-        if (dto == null) {
-            dto = new RecordSelectDto();
-        }
-
+    public List<ExerciseRecordVo> getRecords(Long userId, LocalDate startDate, LocalDate endDate) {
         // 1. 查询运动记录
         List<ExerciseRecord> records = lambdaQuery().eq(ExerciseRecord::getUserId, userId)
                 .orderByDesc(ExerciseRecord::getRecordDate)
-                .ge(dto.getStartDate() != null,ExerciseRecord::getRecordDate, dto.getStartDate())
-                .le(dto.getEndDate() != null,ExerciseRecord::getRecordDate, dto.getEndDate())
+                .ge(startDate != null,ExerciseRecord::getRecordDate, startDate)
+                .le(endDate != null,ExerciseRecord::getRecordDate, endDate)
                 .list();
 
         if (records.isEmpty()) {

@@ -6,7 +6,6 @@ import com.shiliuzi.healthcheckin.common.AppExceptionCodeMsg;
 import com.shiliuzi.healthcheckin.common.exception.ServiceException;
 import com.shiliuzi.healthcheckin.mapper.DietRecordMapper;
 import com.shiliuzi.healthcheckin.pojo.dto.DietCheckInDto;
-import com.shiliuzi.healthcheckin.pojo.dto.RecordSelectDto;
 import com.shiliuzi.healthcheckin.pojo.po.DietRecord;
 import com.shiliuzi.healthcheckin.pojo.po.MealType;
 import com.shiliuzi.healthcheckin.pojo.vo.DietRecordVo;
@@ -75,17 +74,13 @@ public class DietRecordServiceImpl extends ServiceImpl<DietRecordMapper, DietRec
     }
 
     @Override
-    public List<DietRecordVo> getRecords(Long userId, RecordSelectDto dto) {
-        if (dto == null) {
-            dto = new RecordSelectDto();
-        }
-
+    public List<DietRecordVo> getRecords(Long userId, LocalDate startDate, LocalDate endDate) {
         // 1. 查询饮食记录
         List<DietRecord> records = lambdaQuery()
                 .eq(DietRecord::getUserId, userId)
                 .orderByDesc(DietRecord::getRecordDate)
-                .ge(dto.getStartDate() != null, DietRecord::getRecordDate, dto.getStartDate())
-                .le(dto.getEndDate() != null, DietRecord::getRecordDate, dto.getEndDate())
+                .ge(startDate != null, DietRecord::getRecordDate, startDate)
+                .le(endDate != null, DietRecord::getRecordDate, endDate)
                 .list();
 
         if (records.isEmpty()) {

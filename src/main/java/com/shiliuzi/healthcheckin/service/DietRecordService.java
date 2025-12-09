@@ -2,7 +2,6 @@ package com.shiliuzi.healthcheckin.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.shiliuzi.healthcheckin.pojo.dto.DietCheckInDto;
-import com.shiliuzi.healthcheckin.pojo.dto.RecordSelectDto;
 import com.shiliuzi.healthcheckin.pojo.po.DietRecord;
 import com.shiliuzi.healthcheckin.pojo.vo.DietRecordVo;
 
@@ -30,5 +29,5 @@ public interface DietRecordService extends IService<DietRecord> {
      * @param dto 查询条件
      * @return 记录列表
      */
-    List<DietRecordVo> getRecords(Long userId, RecordSelectDto dto);
+    List<DietRecordVo> getRecords(Long userId, LocalDate startDate, LocalDate endDate);
 }

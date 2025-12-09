@@ -2,7 +2,6 @@ package com.shiliuzi.healthcheckin.controller;
 
 import com.shiliuzi.healthcheckin.common.Result;
 import com.shiliuzi.healthcheckin.common.interceptor.JwtInterceptor;
-import com.shiliuzi.healthcheckin.pojo.dto.RecordSelectDto;
 import com.shiliuzi.healthcheckin.pojo.dto.SleepCheckInDto;
 import com.shiliuzi.healthcheckin.pojo.vo.SleepRecordVo;
 import com.shiliuzi.healthcheckin.service.SleepRecordService;
@@ -11,6 +10,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -44,9 +44,9 @@ public class SleepController {
      * @return 记录列表
      */
     @GetMapping("/records")
-    public Result<List<SleepRecordVo>> getSleepRecords(@RequestBody(required = false) RecordSelectDto dto,
-                                                        HttpServletRequest request) {
+    public Result<List<SleepRecordVo>> getSleepRecords(@RequestParam(required = false) LocalDate startDate ,@RequestParam(required = false) LocalDate endDate,
+                                                       HttpServletRequest request) {
         Long userId = JwtInterceptor.getUserIdFromReq(request);
-        return Result.success(sleepRecordService.getRecords(userId, dto));
+        return Result.success(sleepRecordService.getRecords(userId, startDate,endDate));
     }
 }

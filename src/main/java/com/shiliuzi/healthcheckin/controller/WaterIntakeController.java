@@ -2,7 +2,6 @@ package com.shiliuzi.healthcheckin.controller;
 
 import com.shiliuzi.healthcheckin.common.Result;
 import com.shiliuzi.healthcheckin.common.interceptor.JwtInterceptor;
-import com.shiliuzi.healthcheckin.pojo.dto.RecordSelectDto;
 import com.shiliuzi.healthcheckin.pojo.dto.WaterIntakeCheckInDto;
 import com.shiliuzi.healthcheckin.pojo.vo.WaterIntakeRecordVo;
 import com.shiliuzi.healthcheckin.service.WaterIntakeService;
@@ -11,6 +10,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -44,9 +44,10 @@ public class WaterIntakeController {
      * @return 记录列表
      */
     @GetMapping("/records")
-    public Result<List<WaterIntakeRecordVo>> getWaterIntakeRecords(@RequestBody(required = false) RecordSelectDto dto,
+    public Result<List<WaterIntakeRecordVo>> getWaterIntakeRecords(@RequestParam(required = false) LocalDate startDate,
+                                                                   @RequestParam(required = false) LocalDate endDate,
                                                                    HttpServletRequest request) {
         Long userId = JwtInterceptor.getUserIdFromReq(request);
-        return Result.success(waterIntakeService.getRecords(userId, dto));
+        return Result.success(waterIntakeService.getRecords(userId, startDate, endDate));
     }
 }

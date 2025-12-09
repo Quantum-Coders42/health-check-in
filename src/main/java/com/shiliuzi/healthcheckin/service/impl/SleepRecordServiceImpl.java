@@ -1,12 +1,10 @@
 package com.shiliuzi.healthcheckin.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.shiliuzi.healthcheckin.common.AppExceptionCodeMsg;
 import com.shiliuzi.healthcheckin.common.exception.ServiceException;
 import com.shiliuzi.healthcheckin.mapper.SleepRecordMapper;
-import com.shiliuzi.healthcheckin.pojo.dto.RecordSelectDto;
 import com.shiliuzi.healthcheckin.pojo.dto.SleepCheckInDto;
 import com.shiliuzi.healthcheckin.pojo.po.SleepRecord;
 import com.shiliuzi.healthcheckin.pojo.vo.SleepRecordVo;
@@ -17,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 睡眠打卡记录Service实现类
@@ -51,13 +48,13 @@ public class SleepRecordServiceImpl extends ServiceImpl<SleepRecordMapper, Sleep
     }
 
     @Override
-    public List<SleepRecordVo> getRecords(Long userId, RecordSelectDto dto) {
+    public List<SleepRecordVo> getRecords(Long userId,LocalDate startDate, LocalDate endDate) {
         // 支持按日期范围查询
         List<SleepRecord> records = lambdaQuery()
                 .eq(SleepRecord::getUserId, userId)
                 .orderByDesc(SleepRecord::getRecordDate)
-                .ge(dto.getStartDate() != null, SleepRecord::getRecordDate, dto.getStartDate())
-                .le(dto.getEndDate() != null, SleepRecord::getRecordDate, dto.getEndDate())
+                .ge(startDate != null, SleepRecord::getRecordDate, startDate)
+                .le(endDate != null, SleepRecord::getRecordDate, endDate)
                 .list();
 
         if (records.isEmpty()) {
